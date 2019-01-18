@@ -47,8 +47,8 @@
 
 - name: Copy systemd init file
   template:
-    src: init.service.j2
-    dest: /etc/systemd/system/vault.service
+    src: init.sysv.j2
+    dest: /etc/init.d/vault
     owner: root
     group: root
     mode: 0755
