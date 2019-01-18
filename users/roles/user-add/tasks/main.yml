@@ -1,0 +1,5 @@
+- name: Create user accounts and create ssh keys
+  user:
+    name: "{{ item }}"
+    generate_ssh_key: true
+  with_items: "{{ users }}"
