@@ -1,0 +1,6 @@
+---
+vault_addr: ansible_default_ipv4.address
+vault_port: 8200
+vault_ssh_engine: ssh-client-signer
+vault_role: ec2user-role
+vault_token_dir: "{{ playbook_dir }}/rootKey"
