@@ -3,22 +3,27 @@
     name: "{{ item }}"
     generate_ssh_key: true
   with_items: "{{ users }}"
+  register: users_info
+  become: yes
 
 - name: Sign certificate for user accounts
   uri:
-    url: http://{{ vault_addr }}:{{ vault_port }}/v1/{{ vault_ssh_engine }}/sign/{{ vault_role }}
+    url: http://{{ hostvars[groups['tag_Name_vault01'][0]].ansible_host }}:{{ vault_port }}/v1/{{ vault_ssh_engine }}/sign/{{ vault_role }}
     method: POST
-    body: {"public_key": "{{ lookup('file', '/home/{{ item }}/.ssh/id_rsa.pub') }}"}
+    body: {"public_key": "{{ item.ssh_public_key }}"}
     body_format: json
     headers:
       Content-Type: application/json
       X-Vault-Token: "{{ lookup('file', '{{ vault_token_dir }}') }}"
     return_content: yes
   register: json_response
-  with_items: "{{ users }}"
+  with_items: "{{ users_info.results }}"
 
 - name: Copy signed certificate
   copy:
     content: "{{ item.json.data.signed_key }}"
-    dest: /home/{{ item }}/.ssh/id_rsa-cert.pub
+    dest: "/home/{{ item.item.name }}/.ssh/id_rsa-cert.pub"
+    owner: "{{ item.item.name }}"
+    group: "{{ item.item.name }}"
   with_items: "{{ json_response.results }}"
+  become: yes

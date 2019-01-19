@@ -1,8 +1,5 @@
 ---
-- hosts: jumpbox
-  become: yes
-  become_user: root
-  become_method: sudo
+- hosts: localhost
   vars:
     users:
     - jonathanbecker
