@@ -11,5 +11,8 @@
     - user: testuser2
       vault_role: dev
       public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGwxZ/HWPlThN3O/XU5mlGwpLlWvMEaMaCHNDV6EKi+F5rIneHshiZRC3JLlgLoPlvsKKhJzmPeND2kxzgLE+OmtUo9EHbJ9ie1X8qMEeVzUmCBhe5IMbxGejofFcfDd2PYmSazQGgYxV2zftz/iuIoSXnD3MTD8UZnFLiL9Jvp9VpW3MIVYonvUk4DEoHq7Tz0G4Zowrvf27Jkydw5x87Mt+QG9mIad4UVG/CN2yIQ9g6aenyhojlDebpXOu0OnvGxJSJdliRIp48SRoA+rvSOJA6WrU2aT3qsPMV2RWDgr5atAphCiXCX81UilKFY7y+1qAsI7BrFpwiykBW10uV testuser2@ip-10-10-11-190
+    - user: brandonmino
+      vault_role: dev
+      public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDLPdsYDm0snzRBnf7bP3GdoOgLNnuoMlN325qSgJmGVIGtGwPR8E7LKKg5DV8bkpNeNtKFYFqarYnNXpxClKYe/kc1UrwtcdZl6tzkZ7YukU0vBnweJDFXceW/gSnIVqcM4ZdYr/5BovhMNBmjWCWV0b9NL78nj21mmJYHBqLzWPRsABwwQH+Z9+ubhuGdHE2VnMuH+Wr3gjVpAzBgo3GwYuPHtfB6eJqa/zX/E7V6bXPLwShdB9wWkG84KKaXQWnOiPRH+TL+tfttmW+G1mtNzHBWX1ywD14NNEY+g4Eb60qzR+0y7g44bIq0EdgVcK/DE56JAwJIB0G0WgIbYjab brandonmino@c02v407whtdg.users.bah.com
   roles:
     - user-add
