@@ -2,6 +2,5 @@
 vault_addr: hostvars[tag_Name_vault01]['ansible_default_ipv4']['address']
 vault_port: 8200
 vault_ssh_engine: ssh-client-signer
-vault_role: ec2user-role
 vault_token_dir: "/home/ec2-user/devrepos/conf_ecp/vault/rootKey"
 vpc_subnet: 10.10.*.*

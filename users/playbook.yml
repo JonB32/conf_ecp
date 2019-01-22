@@ -3,10 +3,13 @@
   vars:
     users:
     - user: jonathanbecker
+      vault_role: dev
       public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDuPLDU8ehP9t6S6gch89FW1vcY8c8ffty+R9zcLEAi0hcm0P3we5skFBYhWlhB7+x+y3ZqT0DHPUpIHYOjOivDBpS7SLk8iAZqgQTPAC6lV3d3KAEgHqs2CG0zG2OKr9QlIWqUU8mwbnmomf3yIRYMjFrvH6rItYteGfNKZoHN6pqdBx8+vu0vJS2ciIoYiO3pFTKDrlO/bssWxHoMgZ59gkcF4le52jj5obd1G+DThsiDWb01gI5TsLnIEojPVx9wZngmOTeHH3OeGgcwVQAUgTZN6UdDmtZjNbC/WZVjHavm7Oi0iBZ9Dp8gqsDX+VJmJOfJBzRd6RAyr9wFbU5n jonathanbecker@c02xm0d3jgh7.users.bah.com
     - user: testuser
+      vault_role: dev
       public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDCRq2Gj17gZCqrxnpZnlDIN9DSUwRMJCEdJljuEnFHm0hqtA8GtiGv/CHP8bFwBhMPSjVrAJhW9r0XtbpTjRDg5+mpt+0yw+V9LF4RXQY8nXVtNR3SHl7/URSlwz995f3VxTLFDySHrNz3Id3+p6k0JEoHLKn0XEvxiWs4SI07jqUAv+PgQGxJyY3qYr0knmLUfQtHbt3bdfPlzGd55oBW7UbDCgcEUgxxd2fIdO8CGTGax4kdYTrJyaiz8YkCU5gFkr99kCnzdyS6QDTYUl8NSmh+QXURYvnlUwBCRlFBVACtOYTqmNW73u9vjKW/mi/y7TiQQCxSUNbPzNEEMrlv testuser@ip-10-10-11-190
     - user: testuser2
+      vault_role: dev
       public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGwxZ/HWPlThN3O/XU5mlGwpLlWvMEaMaCHNDV6EKi+F5rIneHshiZRC3JLlgLoPlvsKKhJzmPeND2kxzgLE+OmtUo9EHbJ9ie1X8qMEeVzUmCBhe5IMbxGejofFcfDd2PYmSazQGgYxV2zftz/iuIoSXnD3MTD8UZnFLiL9Jvp9VpW3MIVYonvUk4DEoHq7Tz0G4Zowrvf27Jkydw5x87Mt+QG9mIad4UVG/CN2yIQ9g6aenyhojlDebpXOu0OnvGxJSJdliRIp48SRoA+rvSOJA6WrU2aT3qsPMV2RWDgr5atAphCiXCX81UilKFY7y+1qAsI7BrFpwiykBW10uV testuser2@ip-10-10-11-190
   roles:
     - user-add

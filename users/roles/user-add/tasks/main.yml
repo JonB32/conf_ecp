@@ -13,7 +13,7 @@
 
 - name: Sign users given public_key
   uri:
-    url: http://{{ hostvars[groups['tag_Name_vault01'][0]].ansible_host }}:{{ vault_port }}/v1/{{ vault_ssh_engine }}/sign/{{ vault_role }}
+    url: http://{{ hostvars[groups['tag_Name_vault01'][0]].ansible_host }}:{{ vault_port }}/v1/{{ vault_ssh_engine }}/sign/{{ item.vault_role }}
     method: POST
     body: {"public_key": "{{ item.public_key }}"}
     body_format: json
@@ -26,7 +26,7 @@
 
 - name: Sign generated certificate for user accounts
   uri:
-    url: http://{{ hostvars[groups['tag_Name_vault01'][0]].ansible_host }}:{{ vault_port }}/v1/{{ vault_ssh_engine }}/sign/{{ vault_role }}
+    url: http://{{ hostvars[groups['tag_Name_vault01'][0]].ansible_host }}:{{ vault_port }}/v1/{{ vault_ssh_engine }}/sign/{{ item.vault_role }}
     method: POST
     body: {"public_key": "{{ item.ssh_public_key }}"}
     body_format: json
@@ -53,6 +53,14 @@
     owner: "{{ item.item.name }}"
     group: "{{ item.item.name }}"
   with_items: "{{ json_response.results }}"
+  become: yes
+
+- name: Generate user principals file
+  copy:
+    content: dev
+    dest: "/etc/ssh/auth_principals/{{ item.user }}"
+    force: no
+  with_items: "{{ users }}"
   become: yes
 
 - name: Output Signed certificate for users
