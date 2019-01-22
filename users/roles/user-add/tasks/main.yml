@@ -7,20 +7,19 @@
   register: users_info
   become: yes
 
-- debug: var=users_info
-
 - name: Sign users given public_key
   uri:
-    url: http://{{ hostvars[groups['tag_Name_vault01'][0]].ansible_host }}:{{ vault_port }}/v1/{{ vault_ssh_engine }}/sign/{{ item.vault_role }}
+    url: http://{{ hostvars[groups['tag_Name_vault01'][0]].ansible_host }}:{{ vault_port }}/v1/{{ vault_ssh_engine }}/sign/{{ item.item.vault_role }}
     method: POST
-    body: {"public_key": "{{ item.public_key }}"}
+    body: {"public_key": "{{ item.item.public_key }}"}
     body_format: json
     headers:
       Content-Type: application/json
       X-Vault-Token: "{{ lookup('file', '{{ vault_token_dir }}') }}"
     return_content: yes
   register: given_key_json_response
-  with_items: "{{ users }}"
+  when: "{{ item.changed }}"
+  with_items: "{{ users_info.results }}"
 
 - name: Sign generated certificate for user accounts
   uri:
@@ -33,6 +32,7 @@
       X-Vault-Token: "{{ lookup('file', '{{ vault_token_dir }}') }}"
     return_content: yes
   register: json_response
+  when: "{{ item.changed }}"
   with_items: "{{ users_info.results }}"
 
 - name: Copy signed certificate
@@ -41,6 +41,7 @@
     dest: "/home/{{ item.item.name }}/.ssh/id_rsa-cert.pub"
     owner: "{{ item.item.name }}"
     group: "{{ item.item.name }}"
+  when: "{{ item.changed }}"
   with_items: "{{ json_response.results }}"
   become: yes
 
@@ -69,4 +70,5 @@
 
 - name: Output Signed certificate for users
   debug: var=item.json.data.signed_key
+  when: "{{ item.changed }}"
   with_items: "{{ given_key_json_response.results }}"
