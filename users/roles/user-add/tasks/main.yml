@@ -56,5 +56,5 @@
   become: yes
 
 - name: Output Signed certificate for users
-  debug: var=item.ssh_public_key
+  debug: var=item.json.data.signed_key
   with_items: "{{ given_key_json_response.results }}"
