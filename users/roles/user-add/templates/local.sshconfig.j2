@@ -1,0 +1,6 @@
+# << Ansible manged file >>
+
+Host {{ vpc_subnet }}
+  IdentityFile ~/.ssh/id_rsa
+  CertificateFile ~/.ssh/id_rsa-cert.pub
+  User ec2-user

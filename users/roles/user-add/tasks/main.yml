@@ -1,12 +1,30 @@
-- name: Create user accounts and create ssh keys
+- name: debjuc
+  debug:
+    var: users
+
+- name: Create jumpbox user accounts and create ssh keys
   user:
-    name: "{{ item }}"
+    name: "{{ item.user }}"
     generate_ssh_key: true
+    ssh_key_comment: "{{ item.user }}@{{ansible_hostname}}"
   with_items: "{{ users }}"
   register: users_info
   become: yes
 
-- name: Sign certificate for user accounts
+- name: Sign users given public_key
+  uri:
+    url: http://{{ hostvars[groups['tag_Name_vault01'][0]].ansible_host }}:{{ vault_port }}/v1/{{ vault_ssh_engine }}/sign/{{ vault_role }}
+    method: POST
+    body: {"public_key": "{{ item.public_key }}"}
+    body_format: json
+    headers:
+      Content-Type: application/json
+      X-Vault-Token: "{{ lookup('file', '{{ vault_token_dir }}') }}"
+    return_content: yes
+  register: given_key_json_response
+  with_items: "{{ users }}"
+
+- name: Sign generated certificate for user accounts
   uri:
     url: http://{{ hostvars[groups['tag_Name_vault01'][0]].ansible_host }}:{{ vault_port }}/v1/{{ vault_ssh_engine }}/sign/{{ vault_role }}
     method: POST
@@ -27,3 +45,16 @@
     group: "{{ item.item.name }}"
   with_items: "{{ json_response.results }}"
   become: yes
+
+- name: Generate user ssh config file
+  template:
+    src: local.sshconfig.j2
+    dest: "/home/{{ item.item.name }}/.ssh/config"
+    owner: "{{ item.item.name }}"
+    group: "{{ item.item.name }}"
+  with_items: "{{ json_response.results }}"
+  become: yes
+
+- name: Output Signed certificate for users
+  debug: var=item.ssh_public_key
+  with_items: "{{ given_key_json_response.results }}"
