@@ -1,7 +1,3 @@
-- name: debjuc
-  debug:
-    var: users
-
 - name: Create jumpbox user accounts and create ssh keys
   user:
     name: "{{ item.user }}"
@@ -10,6 +6,8 @@
   with_items: "{{ users }}"
   register: users_info
   become: yes
+
+- debug: var=users_info
 
 - name: Sign users given public_key
   uri:
@@ -26,7 +24,7 @@
 
 - name: Sign generated certificate for user accounts
   uri:
-    url: http://{{ hostvars[groups['tag_Name_vault01'][0]].ansible_host }}:{{ vault_port }}/v1/{{ vault_ssh_engine }}/sign/{{ item.vault_role }}
+    url: http://{{ hostvars[groups['tag_Name_vault01'][0]].ansible_host }}:{{ vault_port }}/v1/{{ vault_ssh_engine }}/sign/{{ vault_default_role }}
     method: POST
     body: {"public_key": "{{ item.ssh_public_key }}"}
     body_format: json
@@ -53,6 +51,12 @@
     owner: "{{ item.item.name }}"
     group: "{{ item.item.name }}"
   with_items: "{{ json_response.results }}"
+  become: yes
+
+- name: Generate Principals folder
+  file:
+    path: /etc/ssh/auth_principals
+    state: directory
   become: yes
 
 - name: Generate user principals file
