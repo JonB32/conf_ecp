@@ -2,10 +2,10 @@
   shell: vault write ssh-client-signer/roles/ec2user-role @{{ lookup('template', 'vault.ec2role.j2') }}
   environment:
     VAULT_ADDR: "http://{{ vault_addr }}:{{ vault_port }}"
-    VAULT_TOKEN: "{{ root_token_dir_output }}"
+    VAULT_TOKEN: "{{ lookup('file', root_token_dir_output) }}"
 
 - name: Create dev-role
   shell: vault write ssh-client-signer/roles/dev-role @{{ lookup('template', 'vault.devrole.j2') }}
   environment:
     VAULT_ADDR: "http://{{ vault_addr }}:{{ vault_port }}"
-    VAULT_TOKEN: "{{ root_token_dir_output }}"
+    VAULT_TOKEN: "{{ lookup('file', root_token_dir_output) }}"

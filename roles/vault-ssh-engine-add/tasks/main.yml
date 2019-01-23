@@ -8,7 +8,7 @@
   shell: vault write ssh-client-signer/config/ca generate_signing_key=true
   environment:
     VAULT_ADDR: "http://{{ vault_addr }}:{{ vault_port }}"
-    VAULT_TOKEN: "{{ root_token_dir_output }}"
+    VAULT_TOKEN: "{{ lookup('file', root_token_dir_output) }}"
   register: vault_write_results
 
 - name: Parse output of vault write
