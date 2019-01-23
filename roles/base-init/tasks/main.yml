@@ -1,0 +1,40 @@
+- name: Get public CA Cert Key from vault
+  uri:
+    url: "http://{{ vault_addr }}:{{ vault_port }}/v1/ssh-client-signer/public_key"
+    method: GET
+    body_format: json
+    return_content: yes
+  register: ca_cert_public_key
+
+- name: Save public CA Cert locally
+  copy:
+    content: "{{ ca_cert_public_key }}"
+    dest: /etc/ssh/trusted-user-ca-keys.pem
+  become: yes
+
+- name: Generate Principals folder
+  file:
+    path: /etc/ssh/auth_principals
+    state: directory
+  become: yes
+
+- name: Add public CA Cert key to local sshd config
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: '^TrustedUserCAKeys'
+    line: TrustedUserCAKeys /etc/ssh/trusted-user-ca-keys.pem
+  become: yes
+
+- name: Add Principals path to local sshd config
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: '^AuthorizedPrincipalsFile'
+    line: AuthorizedPrincipalsFile /etc/ssh/auth_principals/%u
+  become: yes
+
+- name: Add ssh configs to local sshconfig
+  blockinfile:
+    dest: /etc/ssh/ssh_config
+    block: "{{ lookup('template', 'sshconfig.j2')}}"
+  become: yes
+  notify: sshd_reload

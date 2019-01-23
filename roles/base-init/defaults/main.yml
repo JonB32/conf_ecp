@@ -1,0 +1,4 @@
+---
+vault_addr: hostvars[groups['tag_Name_vault01'][0]].ansible_host
+vault_port: 8200
+vpc_subnet: 10.10.*.*

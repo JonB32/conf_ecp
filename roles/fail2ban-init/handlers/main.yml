@@ -1,0 +1,3 @@
+- name: Reload sshd
+  command: /etc/init.d/fail2ban restart
+  listen: fail2ban_reload

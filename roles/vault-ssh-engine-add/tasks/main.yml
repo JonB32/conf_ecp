@@ -1,0 +1,30 @@
+- name: Mount ssh secrets engine
+  shell: vault secrets enable -path=ssh-client-signer ssh
+  environment:
+    VAULT_ADDR: "{{ vault_addr }}:{{ vault_port }}"
+    VAULT_TOKEN: "{{ root_token_dir_output }}"
+
+- name: Configure Vault CA for signing client keys
+  shell: vault write ssh-client-signer/config/ca generate_signing_key=true
+  environment:
+    VAULT_ADDR: "{{ vault_addr }}:{{ vault_port }}"
+    VAULT_TOKEN: "{{ root_token_dir_output }}"
+  register: vault_write_results
+
+- name: Parse output of vault write
+  set_fact:
+    vault_write_parsed: "{{ vault_write_results.stdout | from_json }}"
+
+- name: Save public CA Cert locally
+  copy:
+    content: "{{ vault_write_parsed.public_key }}"
+    dest: /etc/ssh/trusted-user-ca-keys.pem
+  become: yes
+
+- name: Add public CA Cert key locally to sshd config
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: '^TrustedUserCAKeys'
+    line: TrustedUserCAKeys /etc/ssh/trusted-user-ca-keys.pem
+  become: yes
+  notify: sshd_reload

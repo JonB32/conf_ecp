@@ -1,0 +1,3 @@
+- name: Reload httpd
+  command: /etc/init.d/httpd restart
+  listen: httpd_reload

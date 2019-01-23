@@ -1,0 +1,28 @@
+---
+- hosts: jumpbox
+  roles:
+    - httpd-proxy
+
+- hosts: vault
+  become: yes
+  become_user: root
+  become_method: sudo
+  roles:
+    - vault
+
+- hosts: vault
+  vars:
+    unseal_keys_dir_output: "{{ playbook_dir }}/unsealKey"
+    root_token_dir_output: "{{ playbook_dir }}/rootKey"
+  roles:
+    - vault-init
+    - vault-unseal
+    - vault-ssh-engine-add
+    - vault-ssh-add-role
+
+- hosts: jumpbox
+  roles:
+    - base-int
+    - google-pam
+    - fail2ban-init
+    - user-add
