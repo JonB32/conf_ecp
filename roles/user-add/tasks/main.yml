@@ -18,7 +18,7 @@
       X-Vault-Token: "{{ lookup('file', '{{ vault_token_dir }}') }}"
     return_content: yes
   register: given_key_json_response
-  when: "{{ item.changed }}"
+  when: item.changed
   with_items: "{{ users_info.results }}"
 
 - name: Sign generated certificate for user accounts
@@ -32,7 +32,7 @@
       X-Vault-Token: "{{ lookup('file', '{{ vault_token_dir }}') }}"
     return_content: yes
   register: json_response
-  when: "{{ item.changed }}"
+  when: item.changed
   with_items: "{{ users_info.results }}"
 
 - name: Copy signed certificate
@@ -41,7 +41,7 @@
     dest: "/home/{{ item.item.name }}/.ssh/id_rsa-cert.pub"
     owner: "{{ item.item.name }}"
     group: "{{ item.item.name }}"
-  when: "{{ item.changed }}"
+  when: item.changed
   with_items: "{{ json_response.results }}"
   become: yes
 
@@ -60,15 +60,15 @@
   become_user: "{{ item.user }}"
   become: yes
   register: google_pam_output
-  when: "{{ item.changed }}"
+  when:  item.changed
   with_items: "{{ users }}"
 
 - name: Output Signed certificate for users
   debug: var=item.json.data.signed_key
-  when: "{{ item.changed }}"
+  when: item.changed
   with_items: "{{ given_key_json_response.results }}"
 
 - name: Output pam secrets for users
   debug: var=item.json.data.signed_key
-  when: "{{ item.changed }}"
+  when: item.changed
   with_items: "{{ google_pam_output.results }}"
