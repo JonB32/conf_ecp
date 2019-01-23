@@ -1,11 +1,21 @@
+- name: Copy ec2user json config
+  template:
+    src: vault.ec2role.j2
+    dest: /tmp/ec2role.json
+
 - name: Create ec2user-role
-  shell: vault write ssh-client-signer/roles/ec2user-role @{{ lookup('template', 'vault.ec2role.j2') }}
+  shell: vault write ssh-client-signer/roles/ec2user-role @/tmp/ec2role.json
   environment:
     VAULT_ADDR: "http://{{ vault_addr }}:{{ vault_port }}"
     VAULT_TOKEN: "{{ lookup('file', root_token_dir_output) }}"
 
+- name: Copy devrole json config
+  template:
+    src: vault.devrole.j2
+    dest: /tmp/devrole.json
+
 - name: Create dev-role
-  shell: vault write ssh-client-signer/roles/dev-role @{{ lookup('template', 'vault.devrole.j2') }}
+  shell: vault write ssh-client-signer/roles/dev-role @/tmp/devrole.json
   environment:
     VAULT_ADDR: "http://{{ vault_addr }}:{{ vault_port }}"
     VAULT_TOKEN: "{{ lookup('file', root_token_dir_output) }}"
