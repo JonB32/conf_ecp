@@ -23,7 +23,7 @@
 
 - name: Sign generated certificate for user accounts
   uri:
-    url: http://{{ hostvars[groups['tag_Name_vault01'][0]].ansible_host }}:{{ vault_port }}/v1/{{ vault_ssh_engine }}/sign/{{ vault_default_role }}
+    url: "http://{{ hostvars[groups['tag_Name_vault01'][0]].ansible_host }}:{{ vault_port }}/v1/{{ vault_ssh_engine }}/sign/{{ vault_default_role }}"
     method: POST
     body: {"public_key": "{{ item.ssh_public_key }}"}
     body_format: json

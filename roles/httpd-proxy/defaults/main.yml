@@ -1,4 +1,4 @@
 ---
 httpd_version: 2.2.34-1.16.amzn1.x86_64
-proxy_addr: hostvars[groups['tag_Name_jumpbox01'][0]].ansible_host
+proxy_addr: "{{ hostvars[groups['tag_Name_jumpbox01'][0]].ansible_host }}"
 proxy_port: 3128
