@@ -1,13 +1,13 @@
 - name: Mount ssh secrets engine
   shell: vault secrets enable -path=ssh-client-signer ssh
   environment:
-    VAULT_ADDR: "{{ vault_addr }}:{{ vault_port }}"
-    VAULT_TOKEN: "{{ root_token_dir_output }}"
+    VAULT_ADDR: "http://{{ vault_addr }}:{{ vault_port }}"
+    VAULT_TOKEN: "{{ lookup('file', root_token_dir_output) }}"
 
 - name: Configure Vault CA for signing client keys
   shell: vault write ssh-client-signer/config/ca generate_signing_key=true
   environment:
-    VAULT_ADDR: "{{ vault_addr }}:{{ vault_port }}"
+    VAULT_ADDR: "http://{{ vault_addr }}:{{ vault_port }}"
     VAULT_TOKEN: "{{ root_token_dir_output }}"
   register: vault_write_results
 
