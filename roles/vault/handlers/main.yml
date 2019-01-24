@@ -1,3 +1,4 @@
 - name: Reload systemd
   command: /etc/init.d/vault restart
   listen: systemd_reload
+  become: yes

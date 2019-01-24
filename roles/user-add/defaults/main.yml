@@ -2,7 +2,7 @@
 vault_addr: "{{ hostvars[groups['tag_Name_vault01'][0]].ansible_host }}"
 vault_port: 8200
 vault_ssh_engine: ssh-client-signer
-vault_token_dir: "/home/ec2-user/devrepos/conf_ecp/rootKey"
+vault_token_dir: "{{ playbook_dir }}/rootKey"
 vault_default_role: ec2user-role
 
 

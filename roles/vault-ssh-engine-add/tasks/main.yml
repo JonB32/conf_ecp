@@ -5,7 +5,7 @@
     VAULT_TOKEN: "{{ lookup('file', root_token_dir_output) }}"
 
 - name: Configure Vault CA for signing client keys
-  shell: vault write ssh-client-signer/config/ca generate_signing_key=true
+  shell: vault write -format json ssh-client-signer/config/ca generate_signing_key=true
   environment:
     VAULT_ADDR: "http://{{ vault_addr }}:{{ vault_port }}"
     VAULT_TOKEN: "{{ lookup('file', root_token_dir_output) }}"
@@ -17,7 +17,7 @@
 
 - name: Save public CA Cert locally
   copy:
-    content: "{{ vault_write_parsed.public_key }}"
+    content: "{{ vault_write_parsed.data.public_key }}"
     dest: /etc/ssh/trusted-user-ca-keys.pem
   become: yes
 

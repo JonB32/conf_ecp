@@ -14,21 +14,21 @@
 - name: Update ServerName for httpd config
   lineinfile:
     dest: /etc/httpd/conf/httpd.conf
-    regexp: '^#ServerName'
+    regexp: '^[#]\?ServerName'
     line: "ServerName {{ proxy_addr }}:{{ proxy_port }}"
   become: yes
 
 - name: Update ProxyRequests for httpd config
   lineinfile:
     dest: /etc/httpd/conf/httpd.conf
-    regexp: '^#ProxyRequests'
+    regexp: '^[#]\?ProxyRequests'
     line: ProxyRequests On
   become: yes
 
 - name: Update ProxyVia for httpd config
   lineinfile:
     dest: /etc/httpd/conf/httpd.conf
-    regexp: '^#ProxyVia'
+    regexp: '^[#]?ProxyVia'
     line: ProxyVia On
   become: yes
   notify: httpd_reload

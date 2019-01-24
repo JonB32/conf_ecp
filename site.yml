@@ -4,9 +4,6 @@
     - httpd-proxy
 
 - hosts: vault
-  become: yes
-  become_user: root
-  become_method: sudo
   roles:
     - vault
 
@@ -26,3 +23,7 @@
     - google-pam
     - fail2ban-init
     - user-add
+
+- hosts: vault
+  roles:
+    - user-copy-keys

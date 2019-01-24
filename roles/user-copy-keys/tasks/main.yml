@@ -1,0 +1,17 @@
+- include_vars:
+    file: ../../user-add/defaults/main.yml
+
+- name: Copy signed user key to vault
+  copy:
+     src: "/tmp/{{ item.user }}-signed.pub"
+     dest: "/vault/ca-user-signed/{{ item.user }}-signed.pub"
+  with_items: "{{ users }}"
+  become: yes
+
+- name: Copy google pam to vault
+  copy:
+    src: "/home/{{ item.user }}/.google_authenticator"
+    dest: "/vault/pam/{{ item.user }}.google_authenticator"
+  with_items: "{{ users }}"
+  become: yes
+

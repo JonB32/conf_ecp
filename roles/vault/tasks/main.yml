@@ -1,7 +1,7 @@
 - name: Creating vault user group
   group:
     name: "{{ vault_group }}"
-  become: true
+  become: yes
 
 - name: Creating vault user
   user:
@@ -12,6 +12,23 @@
     comment: vault nologin User
     createhome: no
     state: present
+  become: yes
+
+- name: Vault dir for signed certs
+  file:
+    path: /vault/ca-user-signed
+    state: directory
+    name: "{{ vault_user }}"
+    group: "{{ vault_group }}"
+  become: yes
+
+- name: Vault dir for pam secrets
+  file:
+    path: /vault/pam
+    state: directory
+    name: "{{ vault_user }}"
+    group: "{{ vault_group }}"
+  become: yes
 
 - name: Configure yum proxy
   lineinfile:
@@ -31,12 +48,10 @@
   get_url:
     url: https://releases.hashicorp.com/vault/{{vault_version}}/vault_{{vault_version}}_linux_amd64.zip
     dest: /tmp/vault_{{vault_version}}_linux_amd64.zip
-    owner: "{{ vault_user }}"
-    group: "{{ vault_group }}"
-    mode: 0755
     checksum: "{{ vault_checksum }}"
   environment:
     http_proxy: "http://{{ yum_proxy_addr }}:{{ yum_proxy_port }}"
+    https_proxy: "http://{{ yum_proxy_addr }}:{{ yum_proxy_port }}"
   register: vault_download
 
 - name: Unzip vault archive
@@ -44,15 +59,22 @@
     src: "{{ vault_download.dest }}"
     dest: /usr/local/bin
     copy: no
-    owner: "{{ vault_user }}"
-    group: "{{ vault_group }}"
-    mode: 0755
+  become: yes
 
 - name: Set vault binary capabilities
   capabilities:
     path: /usr/local/bin/vault
     capability: cap_ipc_lock+ep
     state: present
+  become: yes
+
+- name: config file
+  template:
+    src: vault.hcl.j2
+    dest: "{{ vault_config_path }}"
+    owner: "{{ vault_user }}"
+    group: "{{ vault_group }}"
+  become: yes
 
 - name: Copy systemd init file
   template:
@@ -62,16 +84,11 @@
     group: root
     mode: 0755
   notify: systemd_reload
+  become: yes
 
-- name: config file
-  template:
-    src: vault.hcl.j2
-    dest: "{{ vault_config_path }}"
-    owner: "{{ vault_user }}"
-    group: "{{ vault_group }}"
-
-- name: vault service
-  service:
-    name: vault
-    state: started
-    enabled: yes
+#- name: vault service
+#  service:
+#    name: vault
+#    state: started
+#    enabled: yes
+#  become: yes

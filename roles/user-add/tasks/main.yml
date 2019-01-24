@@ -21,6 +21,14 @@
   when: item.changed
   with_items: "{{ users_info.results }}"
 
+- name: Copy signed user key to vault
+  copy:
+     content: "{{ item.json.data.signed_key }}"
+     dest: "/tmp/{{ item.item.name }}-signed.pub"
+  when: item.changed
+  with_items: "{{ given_key_json_response.results }}"
+  become: yes
+
 - name: Sign generated certificate for user accounts
   uri:
     url: "http://{{ hostvars[groups['tag_Name_vault01'][0]].ansible_host }}:{{ vault_port }}/v1/{{ vault_ssh_engine }}/sign/{{ vault_default_role }}"
@@ -53,15 +61,22 @@
   with_items: "{{ users }}"
   become: yes
 
-- name: Generate goolgle pam TOTP secrets
+- name: Get google pam config for user
+  stat:
+    path: "/home/{{ item.item.user }}/.google_authenticator"
+  register: google_pam_cfg
+  with_items: "{{ users_info.results }}"
+  become: yes
+
+- name: Generate google pam TOTP secrets
   shell: google-authenticator -t -d -f -r 3 -R 30 -w 3
   args:
     chdir: ~/
   become_user: "{{ item.item.user }}"
   become: yes
   register: google_pam_output
-  when:  item.changed
-  with_items: "{{ users_info.results }}"
+  when: not item.stat.exists
+  with_items: "{{ google_pam_cfg.results }}"
 
 - name: Output Signed certificate for users
   debug: var=item.json.data.signed_key
@@ -69,6 +84,6 @@
   with_items: "{{ given_key_json_response.results }}"
 
 - name: Output pam secrets for users
-  debug: var=item.json.data.signed_key
+  debug: var=item.stdout_lines
   when: item.changed
   with_items: "{{ google_pam_output.results }}"

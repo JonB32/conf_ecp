@@ -21,8 +21,8 @@
 - name: Comment auth substack setting to /etc/pam.d/sshd
   lineinfile:
     dest: /etc/pam.d/sshd
-    regexp: '^auth\s+substack\s+password-auth'
-    line: #auth       substack     password-auth
+    regexp: '^[#]\?auth[ \t]\+substack'
+    line: "#auth       substack     password-auth"
   become: yes
 
 - name: Add AuthenticationMethods for pam TOTP to sshd_config
