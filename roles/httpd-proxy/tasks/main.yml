@@ -8,7 +8,7 @@
   lineinfile:
     dest: /etc/httpd/conf/httpd.conf
     regexp: '^Listen'
-    line: "Listen {{ proxy_addr }}:{{ proxy_port }}"
+    line: "Listen {{ proxy_port }}"
   become: yes
 
 - name: Update ServerName for httpd config
