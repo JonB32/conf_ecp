@@ -57,11 +57,11 @@
   shell: google-authenticator -t -d -f -r 3 -R 30 -w 3
   args:
     chdir: ~/
-  become_user: "{{ item.user }}"
+  become_user: "{{ item.item.user }}"
   become: yes
   register: google_pam_output
   when:  item.changed
-  with_items: "{{ users }}"
+  with_items: "{{ users_info.results }}"
 
 - name: Output Signed certificate for users
   debug: var=item.json.data.signed_key

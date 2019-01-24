@@ -1,5 +1,5 @@
 ---
-- hosts: jumpbox
+- hosts: localhost
   roles:
     - httpd-proxy
 
@@ -20,9 +20,9 @@
     - vault-ssh-engine-add
     - vault-ssh-add-role
 
-- hosts: jumpbox
+- hosts: localhost
   roles:
-    - base-int
+    - base-init
     - google-pam
     - fail2ban-init
     - user-add
