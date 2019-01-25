@@ -20,7 +20,7 @@
 - name: Comment auth substack setting to /etc/pam.d/sshd
   lineinfile:
     dest: /etc/pam.d/sshd
-    regexp: '^[#]?auth[ \t]\+substack'
+    regexp: '^[#]?auth[ \t]+substack'
     line: "#auth       substack     password-auth"
   become: yes
 

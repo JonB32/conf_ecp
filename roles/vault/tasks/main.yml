@@ -82,6 +82,13 @@
   notify: vault_reload
   become: yes
 
+- name: vault service
+  sysvinit:
+    name: vault
+    state: started
+    enabled: yes
+  become: yes
+
 #- name: vault service
 #  service:
 #    name: vault
