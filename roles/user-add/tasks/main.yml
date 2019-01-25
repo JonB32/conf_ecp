@@ -21,7 +21,7 @@
   when: item.changed
   with_items: "{{ users_info.results }}"
 
-- name: Copy signed user key to vault
+- name: Copy signed user key
   copy:
      content: "{{ item.json.data.signed_key }}"
      dest: "/tmp/{{ item.item.name }}-signed.pub"
@@ -72,11 +72,21 @@
   shell: google-authenticator -t -d -f -r 3 -R 30 -w 3
   args:
     chdir: ~/
-  become_user: "{{ item.item.user }}"
-  become: yes
   register: google_pam_output
-  when: not item.stat.exists
   with_items: "{{ google_pam_cfg.results }}"
+  when: not item.stat.exists
+  become_user: "{{ item.item.item.user }}"
+  become: yes
+
+- name: Copy pam secrets
+  copy:
+     src: "/home/{{ item.item.user }}/.google_authenticator"
+     dest: "/tmp/{{ item.item.user }}.google_authenticator"
+     remote_src: true
+  when: item.changed
+  with_items: "{{ users_info.results }}"
+  become: yes
+  become_user: root
 
 - name: Output Signed certificate for users
   debug: var=item.json.data.signed_key

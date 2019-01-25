@@ -1,4 +1,5 @@
-- include_vars:
+- name: Include vars from user-add role
+  include_vars:
     file: ../../user-add/defaults/main.yml
 
 - name: Copy signed user key to vault
@@ -10,7 +11,7 @@
 
 - name: Copy google pam to vault
   copy:
-    src: "/home/{{ item.user }}/.google_authenticator"
+    src: "/tmp/{{ item.user }}.google_authenticator"
     dest: "/vault/pam/{{ item.user }}.google_authenticator"
   with_items: "{{ users }}"
   become: yes

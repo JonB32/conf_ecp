@@ -18,16 +18,12 @@
   file:
     path: /vault/ca-user-signed
     state: directory
-    name: "{{ vault_user }}"
-    group: "{{ vault_group }}"
   become: yes
 
 - name: Vault dir for pam secrets
   file:
     path: /vault/pam
     state: directory
-    name: "{{ vault_user }}"
-    group: "{{ vault_group }}"
   become: yes
 
 - name: Configure yum proxy

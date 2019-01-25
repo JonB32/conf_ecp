@@ -8,9 +8,10 @@
 
 - name: Save public CA Cert locally
   copy:
-    content: "{{ ca_cert_public_key }}"
+    content: "{{ ca_cert_public_key.content }}"
     dest: /etc/ssh/trusted-user-ca-keys.pem
   become: yes
+  notify: sshd_reload
 
 - name: Generate Principals folder
   file:
