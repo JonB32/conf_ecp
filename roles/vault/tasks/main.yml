@@ -79,7 +79,7 @@
     owner: root
     group: root
     mode: 0755
-  notify: systemd_reload
+  notify: vault_reload
   become: yes
 
 #- name: vault service

@@ -25,8 +25,8 @@
   copy:
      content: "{{ item.json.data.signed_key }}"
      dest: "/tmp/{{ item.item.name }}-signed.pub"
-  when: item.changed
   with_items: "{{ given_key_json_response.results }}"
+  when: item.json is defined
   become: yes
 
 - name: Sign generated certificate for user accounts
@@ -49,8 +49,8 @@
     dest: "/home/{{ item.item.name }}/.ssh/id_rsa-cert.pub"
     owner: "{{ item.item.name }}"
     group: "{{ item.item.name }}"
-  when: item.changed
   with_items: "{{ json_response.results }}"
+  when: item.json is defined
   become: yes
 
 - name: Generate user principals file
@@ -88,12 +88,12 @@
   become: yes
   become_user: root
 
-- name: Output Signed certificate for users
-  debug: var=item.json.data.signed_key
-  when: item.changed
-  with_items: "{{ given_key_json_response.results }}"
-
-- name: Output pam secrets for users
-  debug: var=item.stdout_lines
+- name: Copy pam url
+  lineinfile:
+    dest: "/tmp/{{ item.item.item.name }}.google_authenticator"
+    regexp: '^https'
+    line: "{{ item.stdout_lines[0] }}"
   when: item.changed
   with_items: "{{ google_pam_output.results }}"
+  become: yes
+
