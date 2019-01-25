@@ -1,4 +1,6 @@
 - name: Reload systemd
+  environment:
+    VAULT_ADDR: http://127.0.0.1:8200
   command: /etc/init.d/vault restart
   listen: systemd_reload
   become: yes
