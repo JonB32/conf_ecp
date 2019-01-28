@@ -14,19 +14,11 @@
     state: present
   become: yes
 
-- name: Vault dir
-  file:
-    path: /vault
-    state: directory
-    name: "{{ vault_user }}"
-    group: "{{ vault_group }}"
-  become: yes
-
 - name: Vault dir for signed certs
   file:
     path: /vault/ca-user-signed
     state: directory
-    name: "{{ vault_user }}"
+    owner: "{{ vault_user }}"
     group: "{{ vault_group }}"
   become: yes
 
@@ -34,7 +26,7 @@
   file:
     path: /vault/pam
     state: directory
-    name: "{{ vault_user }}"
+    owner: "{{ vault_user }}"
     group: "{{ vault_group }}"
   become: yes
 
