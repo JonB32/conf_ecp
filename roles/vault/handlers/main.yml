@@ -1,6 +1,4 @@
 - name: Start vault
-  environment:
-    VAULT_ADDR: http://127.0.0.1:8200
-  command: /etc/init.d/vault start
+  command: chkconfig vault --add
   listen: vault_reload
   become: yes

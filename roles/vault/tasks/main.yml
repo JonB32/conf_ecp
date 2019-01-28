@@ -45,6 +45,9 @@
     url: https://releases.hashicorp.com/vault/{{vault_version}}/vault_{{vault_version}}_linux_amd64.zip
     dest: /tmp/vault_{{vault_version}}_linux_amd64.zip
     checksum: "{{ vault_checksum }}"
+    owner: "{{ vault_user }}"
+    group: "{{ vault_group }}"
+    mode: 0755
   environment:
     http_proxy: "http://{{ yum_proxy_addr }}:{{ yum_proxy_port }}"
     https_proxy: "http://{{ yum_proxy_addr }}:{{ yum_proxy_port }}"
@@ -55,7 +58,9 @@
     src: "{{ vault_download.dest }}"
     dest: /usr/local/bin
     copy: no
-  become: yes
+    owner: "{{ vault_user }}"
+    group: "{{ vault_group }}"
+    mode: 0755
 
 - name: Set vault binary capabilities
   capabilities:
@@ -74,24 +79,44 @@
 
 - name: Copy systemd init file
   template:
-    src: init.sysv.j2
+    src: init.vault.sysvinit.j2
     dest: /etc/init.d/vault
     owner: root
     group: root
     mode: 0755
-  notify: vault_reload
-  become: yes
-
-- name: vault service
-  sysvinit:
-    name: vault
-    state: started
-    enabled: yes
+#  notify: vault_reload
   become: yes
 
 #- name: vault service
-#  service:
+#  sysvinit:
 #    name: vault
 #    state: started
 #    enabled: yes
+#    runlevels:
+#     - 2
+#     - 3
+#     - 4
+#     - 5
+#  become_method: sudo
+
+#- name: vault ser
+#  shell: "sudo /etc/init.d/vault restart"
 #  become: yes
+
+- name: enable sysv
+  service:
+    name: vault
+    enabled: yes
+
+- name: vault service
+#  environment:
+#    VAULT_ADDR: http://127.0.0.1:8200
+  service:
+    name: vault
+    state: started
+    pattern: "vault"
+  become: yes
+
+- name: sleep
+  wait_for: timeout=10
+  delegate_to: localhost

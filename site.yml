@@ -3,15 +3,16 @@
   roles:
     - httpd-proxy
 
-- hosts: vault
-  roles:
-    - vault
+#- hosts: vault
+#  roles:
+#    - vault
 
 - hosts: vault
   vars:
     unseal_keys_dir_output: "{{ playbook_dir }}/unsealKey"
     root_token_dir_output: "{{ playbook_dir }}/rootKey"
   roles:
+    - vault
     - vault-init
     - vault-unseal
     - vault-ssh-engine-add
