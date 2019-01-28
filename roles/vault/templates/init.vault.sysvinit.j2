@@ -44,7 +44,7 @@ start() {
     umask 077
 
     touch $logfile $pidfile
-    chown $root:$root $logfile $pidfile
+    chown $user:$user $logfile $pidfile
 
     echo -n $"Starting $prog: "
     

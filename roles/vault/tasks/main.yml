@@ -18,12 +18,16 @@
   file:
     path: /vault/ca-user-signed
     state: directory
+    name: "{{ vault_user }}"
+    group: "{{ vault_group }}"
   become: yes
 
 - name: Vault dir for pam secrets
   file:
     path: /vault/pam
     state: directory
+    name: "{{ vault_user }}"
+    group: "{{ vault_group }}"
   become: yes
 
 - name: Configure yum proxy
@@ -52,6 +56,7 @@
     http_proxy: "http://{{ yum_proxy_addr }}:{{ yum_proxy_port }}"
     https_proxy: "http://{{ yum_proxy_addr }}:{{ yum_proxy_port }}"
   register: vault_download
+  become: yes
 
 - name: Unzip vault archive
   unarchive:
@@ -61,6 +66,7 @@
     owner: "{{ vault_user }}"
     group: "{{ vault_group }}"
     mode: 0755
+  become: yes
 
 - name: Set vault binary capabilities
   capabilities:
@@ -103,10 +109,10 @@
 #  shell: "sudo /etc/init.d/vault restart"
 #  become: yes
 
-- name: enable sysv
-  service:
-    name: vault
-    enabled: yes
+#- name: enable sysv
+#  service:
+#    name: vault
+#    enabled: yes
 
 - name: vault service
 #  environment:
